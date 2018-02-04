@@ -1,5 +1,37 @@
 <ComicCreator>:
-    Button:
-        text: 'Float'
-        size_hint: 0.3, 0.3
-        pos: 0,0
+    AnchorLayout:
+    #Anchor layout is chosen because tools needed to be anchored to
+    #the corner
+    #this layout for Tool
+        anchor_x:'left'
+        anchor_y:'top'
+        #selecting top left corner
+        Tools:
+            #
+            size_hint: None,None
+            #id will refer to Tools
+            id: _tool
+            #width of tool
+            width:100
+
+    AnchorLayout:
+        anchor_x:'right'
+        anchor_y:'top'
+
+        DrawingSpace:
+            size_hint: 1,1
+            id: _drawing
+            #width and height of drawing space will be calculated in real
+            #time root.width is current size of window
+            width:root.width-_tool.width
+            height:root.height-_controls.height
+
+    AnchorLayout:
+        anchor_x:'center'
+        anchor_y:'bottom'
+
+        Controls:
+            id:_controls
+            height:40
+            #Controls will expand laterally to proportion of window
+            size_hint: 1,None
