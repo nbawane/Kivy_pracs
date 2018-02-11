@@ -5,7 +5,6 @@ from kivy.network.urlrequest import UrlRequest
 
 class Weather(BoxLayout):
 	search_input = ObjectProperty()
-
 	#this will act as the property of text input
 	#all the functions of textinput now can be accessed with
 	#this property. search_input is assigned the id of textinput.
@@ -14,6 +13,8 @@ class Weather(BoxLayout):
 	# can now be accessed in python code with ObjecgProperty and in
 	# this way functionality of textinput can be acccessed in python
 	# with the help of search_input
+	search_result = ObjectProperty()
+	#property for listview
 	def search_loc(self):
 		weatherAPI = 'http://samples.openweathermap.org/data/2.5/weather?q={}&appid=b6907d289e10d714a6e88b30761fae22'
 		#this the event handeler on search button press
@@ -25,8 +26,13 @@ class Weather(BoxLayout):
 		#we need to decode json data
 
 	def found_location(self,request, data):
-		cities = ["{} ({})".format(data['name'], data['sys']['country'])]
+		cities = ["{} temp ({})F".format(data['name'], data['main']['temp'])]
 		print('\n'.join(cities))
+		self.search_result.item_strings = cities
+		#search_result is the property defined for
+		# listview. using the property we are assigning the
+		#  cities list to item_strings, which holds the list
+		# to display list contednt
 
 
 class WeatherApp(App):
