@@ -1,9 +1,11 @@
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
+from kivy.network.urlrequest import UrlRequest
 
 class Weather(BoxLayout):
 	search_input = ObjectProperty()
+
 	#this will act as the property of text input
 	#all the functions of textinput now can be accessed with
 	#this property. search_input is assigned the id of textinput.
@@ -13,8 +15,18 @@ class Weather(BoxLayout):
 	# this way functionality of textinput can be acccessed in python
 	# with the help of search_input
 	def search_loc(self):
+		weatherAPI = 'http://samples.openweathermap.org/data/2.5/weather?q={}&appid=b6907d289e10d714a6e88b30761fae22'
 		#this the event handeler on search button press
-		print('lololololo : %s'%self.search_input.text)
+		cityname = self.search_input.text
+		weatherAPI = weatherAPI.format(cityname)
+		request = UrlRequest(weatherAPI,self.found_location)
+		#above is the specific request api from kivy which collects data and
+		#pass it to function objeect with request and decoded json data.
+		#we need to decode json data
+
+	def found_location(self,request, data):
+		cities = ["{} ({})".format(data['name'], data['sys']['country'])]
+		print('\n'.join(cities))
 
 
 class WeatherApp(App):
