@@ -3,6 +3,8 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 from kivy.network.urlrequest import UrlRequest
 from kivy.uix.listview import ListItemButton
+from kivy.factory import Factory
+
 
 class LocationButton(ListItemButton):
 	print(dir(ListItemButton))
@@ -56,10 +58,20 @@ class Weather(BoxLayout):
 		#disable the clear see fr yrself
 		self.search_result.adapter.data.extend(cities)
 
+	def show_addlocation_form(self):
+		self.clear_widgets()
+		self.add_widget(Weather())
+
 	def show_current_weather(self,location):
 		from kivy.uix.label import Label
 		self.clear_widgets()
-		self.add_widget(Label(text=location))
+		currentweather = Factory.CurrentWeather()
+		#Current weather is dynamically created class in KVland
+		#so we cant directly import. We have a interface of
+		# Factory which is deveoped based on factory design pattern
+		currentweather.location = location	#accessing the property defined in KVlang
+		self.add_widget(currentweather)
+
 class WeatherApp(App):
 	def build(self):
 		return Weather()
