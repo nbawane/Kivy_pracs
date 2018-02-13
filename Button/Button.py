@@ -2,8 +2,21 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 from kivy.network.urlrequest import UrlRequest
+from kivy.uix.listview import ListItemButton
 
-
+class LocationButton(ListItemButton):
+	print(dir(ListItemButton))
+	'''
+	list adapter is given the refereance of this class,
+	class inherits LitstItemButton
+	action perfromed by this vlass is defined in KV lang file
+	KV file , on listviewbutton press triggers the method in root
+	that is show_current_weather, which recievs text, that text is
+	used as label to create the other widget. that will work as simple label widget
+	doubt: how in KV lanf self.text is getting value
+	ans: probably that is the text on button in list
+	'''
+	pass
 
 class Weather(BoxLayout):
 	search_input = ObjectProperty()
@@ -43,7 +56,10 @@ class Weather(BoxLayout):
 		#disable the clear see fr yrself
 		self.search_result.adapter.data.extend(cities)
 
-
+	def show_current_weather(self,location):
+		from kivy.uix.label import Label
+		self.clear_widgets()
+		self.add_widget(Label(text=location))
 class WeatherApp(App):
 	def build(self):
 		return Weather()
