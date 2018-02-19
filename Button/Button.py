@@ -1,13 +1,13 @@
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty,ListProperty
 from kivy.network.urlrequest import UrlRequest
 from kivy.uix.listview import ListItemButton
 from kivy.factory import Factory
 
 
 class LocationButton(ListItemButton):
-	print(dir(ListItemButton))
+
 	'''
 	list adapter is given the refereance of this class,
 	class inherits LitstItemButton
@@ -18,6 +18,7 @@ class LocationButton(ListItemButton):
 	doubt: how in KV lanf self.text is getting value
 	ans: probably that is the text on button in list
 	'''
+	location = ListProperty()
 	pass
 
 class Weather(BoxLayout):
@@ -32,6 +33,7 @@ class Weather(BoxLayout):
 	# with the help of search_input
 	import kivy.adapters.listadapter
 	search_result = ObjectProperty()
+	current_weather = ObjectProperty()
 	#property for listview
 	def search_loc(self):
 		weatherAPI = 'http://samples.openweathermap.org/data/2.5/weather?q={}&appid=b6907d289e10d714a6e88b30761fae22'
@@ -44,19 +46,22 @@ class Weather(BoxLayout):
 		#we need to decode json data
 
 	def found_location(self,request, data):
-		cities = ["{} temp ({})F".format(data['name'], data['main']['temp'])]
-		print('\n'.join(cities))
-		templist = ['Nagpur 30C','Mumbai 28C','Pune 23C']
+		cities = [(data['name'], data['main']['temp'])]
+		# print('\n'.join(cities))
+		# templist = ['Nagpur 30C','Mumbai 28C','Pune 23C']
 		# self.search_result.item_strings = cities
 		#search_result is the property defined for
 		# listview. using the property we are assigning the
 		#  cities list to item_strings, which holds the list
 		# to display list contednt
-		cities.extend(templist)
+		# cities.extend(templist)
 		self.search_result.adapter.data.clear()
 		#data here is a list,clear clears the list so it doesnt creat the stack of replicated data
 		#disable the clear see fr yrself
 		self.search_result.adapter.data.extend(cities)
+	def args_converter(self,index,data_item):
+		city,country = data_item
+		return{'location':(city,country)}
 
 	def show_addlocation_form(self):
 		self.clear_widgets()
@@ -65,12 +70,16 @@ class Weather(BoxLayout):
 	def show_current_weather(self,location):
 		from kivy.uix.label import Label
 		self.clear_widgets()
-		currentweather = Factory.CurrentWeather()
+		if location is None and self.current_weather is None:
+			location = ('New Youk' ,'(US)')
+		if location is not None:
+			self.current_weather = Factory.CurrentWeather()
+			self.current_weather.location = location	#accessing the property defined in KVlang
 		#Current weather is dynamically created class in KVland
 		#so we cant directly import. We have a interface of
 		# Factory which is deveoped based on factory design pattern
-		currentweather.location = location	#accessing the property defined in KVlang
-		self.add_widget(currentweather)
+
+		self.add_widget(self.current_weather)
 
 class WeatherApp(App):
 	def build(self):

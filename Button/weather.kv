@@ -1,0 +1,49 @@
+#: import main Button
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+
+
+<Weather>:
+    orientation: "vertical"
+    search_input:search_prop
+    search_result:search_list
+    BoxLayout:
+        height: "40dp"
+        size_hint_y: None
+        TextInput:
+            id:search_prop
+            size_hint_x: 50
+        Button:
+            text: "Search"
+            size_hint_x: 25
+            on_press:root.search_loc()
+        Button:
+            text: "Current Location"
+            size_hint_x: 25
+    ListView:
+        id:search_list
+        adapter:
+            ListAdapter(data=[], cls=main.LocationButton, args_converter=root.args_converter)
+<LocationButton>:
+    text: "{} ({})".format(self.location[0],self.location[1])
+    height: "40dp"
+    size_hint_y:None
+    on_press: app.root.show_current_weather(self.location)
+
+<CurrentWeather@BoxLayout>:
+    location:['New York', 'US']
+    conditions:None
+    temp:None
+    temp_min:None
+    temp_max:None
+    orientation:'vertical'
+    Label:
+        text:"{}({})".format(root.location[0],root.location[0])
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height:'40dp'
+        Button:
+            text: 'Add Location'
+            on_press: app.root.show_addlocation_form()
+        Button:
+            text:"Forecast"
